@@ -1,6 +1,6 @@
 import express, { Router, Express } from 'express';
 import { Type } from './types';
-import { IMiniNestApp, IRouteData } from './interfaces';
+import { ExceptionFilter, IMiniNestApp, IRouteData } from './interfaces';
 import { container } from './container';
 import { GuardsMiddleware } from './middlewares/guards.middlewate';
 import { META_MINI_MODULE, META_MINI_PREFIX, META_MINI_ROUTES } from './constansts';
@@ -17,7 +17,7 @@ export class NestFactory {
 
         const globalGuards: Type[] = [];
         const globalPipes: Type[] = [];
-        const globalFilters: Type[] = [];
+        const globalFilters: (ExceptionFilter | Function)[] = [];
 
         const registerModule = (module: Type) => {
             const meta = Reflect.getMetadata(META_MINI_MODULE, module);
@@ -60,12 +60,11 @@ export class NestFactory {
             listen,
             useGlobalGuards: (guards: Type | Type[]) => {
                 Array.isArray(guards) ? globalGuards.push(...guards) : globalGuards.push(guards);
-                
             },
             useGlobalPipes: (pipes: Type | Type[]) => {
                 Array.isArray(pipes) ? globalPipes.push(...pipes) : globalPipes.push(pipes);
             },
-            useGlobalFilters: (filters: Type | Type[]) => {
+            useGlobalFilters: (filters: (ExceptionFilter | Function)[]) => {
                 Array.isArray(filters) ? globalFilters.push(...filters) : globalFilters.push(filters);
             },
         }

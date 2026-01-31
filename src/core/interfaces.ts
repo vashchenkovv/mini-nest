@@ -5,7 +5,7 @@ export interface IMiniNestApp {
   listen: (port: number, callback?: () => void) => void,
   useGlobalGuards: (guards: Type[]) => void,
   useGlobalPipes: (pipes: Type[]) => void,
-  useGlobalFilters: (filters: Type[]) => void,
+  useGlobalFilters: (filters: ExceptionFilter[] | Function[]) => void,
 }
 
 export interface IRouteData {
@@ -37,4 +37,8 @@ export interface ArgumentMetadata {
 
 export interface PipeTransform<T = any, R = any> {
   transform(value: T, metadata: ArgumentMetadata): R | Promise<R>;
+}
+
+export interface ExceptionFilter<T = any> {
+  catch(exception: T, ctx: IExecutionContext): any;
 }
